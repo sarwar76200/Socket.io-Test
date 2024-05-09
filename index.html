@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- <link href="./output.css" rel="stylesheet"> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 id="user" class="text-2xl font-bold underline">
+
+    </h1>
+    <form id="form">
+        <input type="text" id="msg">
+        <button type="submit" id="btn">Send</button>
+    </form>
+    <div id="feed">
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const users = ['A', 'B', 'C', 'D', 'E', 'F'];
+        let messages = [];
+        const socket = io();
+        const form = document.getElementById("form");
+        const msg = document.getElementById("msg");
+        const feed = document.getElementById("feed");
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            // messages = [...messages, { user: document.getElementById("user").innerHTML, message: msg.value }];
+
+            socket.emit('send_message', [...messages, { user: document.getElementById("user").innerHTML, message: msg.value }]);
+        });
+
+        const user = document.getElementById("user");
+        window.onload = () => {
+            user.innerHTML = users[Math.floor(Math.random() * users.length)];
+        };
+
+        socket.on('receive_message', (data) => {
+            messages = data;
+            console.log(messages);
+            let texts = '';
+            messages.map(msg => {
+                texts += `<p>${msg.user}: ${msg.message}</p>`;
+            });
+            feed.innerHTML = texts;
+        });
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
